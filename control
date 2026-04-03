@@ -1,0 +1,7 @@
+Package: com.salah.pespro
+Name: PES Pro Tweak by Salah
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Author: Mohamed Salah
+Description: Smart shooting and elegant pitch for PES.
