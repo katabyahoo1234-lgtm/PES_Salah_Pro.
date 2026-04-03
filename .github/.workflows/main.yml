@@ -3,21 +3,22 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Theos
+      - name: Install Theos and SDK
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
-          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C /opt/theos/sdks
+          sudo git clone --recursive https://github.com/theos/theos.git /opt/theos
+          sudo curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | sudo tar -xJ -C /opt/theos/sdks
           echo "THEOS=/opt/theos" >> $GITHUB_ENV
           echo "/opt/theos/bin" >> $GITHUB_PATH
 
       - name: Build Package
         run: |
           export THEOS=/opt/theos
+          export PATH=$THEOS/bin:$PATH
           make package FINALPACKAGE=1
           
       - name: Upload Artifact
