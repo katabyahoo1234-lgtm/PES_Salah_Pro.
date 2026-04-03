@@ -4,8 +4,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: macos-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -14,18 +12,13 @@ jobs:
         run: |
           bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
           echo "THEOS=/opt/theos" >> $GITHUB_ENV
-          echo "/opt/theos/bin" >> $GITHUB_PATH
 
-      - name: Get SDK
+      - name: Build
         run: |
-          git clone https://github.com/theos/sdks.git /opt/theos/sdks
-
-      - name: Build Package
-        run: |
-          export THEOS=/opt/theos
-          make package FINALPACKAGE=1
-
-      - name: Upload Artifact
+          cd $GITHUB_WORKSPACE
+          make package FINALPACKAGE=1 THEOS_DEVICE_IP=localhost
+          
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: PES_Salah_Tweak
