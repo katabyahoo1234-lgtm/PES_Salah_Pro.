@@ -16,6 +16,10 @@ jobs:
           echo "THEOS=/opt/theos" >> $GITHUB_ENV
           echo "/opt/theos/bin" >> $GITHUB_PATH
 
+      - name: Get SDK
+        run: |
+          git clone https://github.com/theos/sdks.git /opt/theos/sdks
+
       - name: Build Package
         run: |
           export THEOS=/opt/theos
