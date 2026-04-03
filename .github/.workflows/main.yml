@@ -1,28 +1,35 @@
 name: Build Tweak
-on: [push, pull_request]
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Theos and SDK
+      - name: Setup Environment
         run: |
-          sudo git clone --recursive https://github.com/theos/theos.git /opt/theos
-          sudo curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | sudo tar -xJ -C /opt/theos/sdks
+          # تنظيف وبناء المسارات بقوة
+          sudo mkdir -p /opt/theos
+          sudo chown $(whoami) /opt/theos
+          git clone --recursive https://github.com/theos/theos.git /opt/theos
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C /opt/theos/sdks
           echo "THEOS=/opt/theos" >> $GITHUB_ENV
           echo "/opt/theos/bin" >> $GITHUB_PATH
 
-      - name: Build Package
+      - name: Build Final Package
         run: |
           export THEOS=/opt/theos
           export PATH=$THEOS/bin:$PATH
+          # التغلب على أي خطأ في الملفات
           make package FINALPACKAGE=1
           
-      - name: Upload Artifact
+      - name: Upload Tweak
         uses: actions/upload-artifact@v4
         with:
-          name: PES_Salah_Tweak
+          name: PES-Salah-Pro-DEB
           path: packages/*.deb
