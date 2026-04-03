@@ -1,10 +1,11 @@
-ARCHS = arm64
-TARGET = iphone:clang:14.5:14.5
+export THEOS=/opt/theos
+ARCHS = arm64 arm64e
+TARGET = iphone:clang:latest:14.0
+
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = PESSalahPro
-PESSalahPro_FILES = Tweak.x
-PESSalahPro_CFLAGS = -fobjc-arc -w
-PESSalahPro_LDFLAGS = -lFoundation -lobjc
+TWEAK_NAME = PES_Salah_Pro
+PES_Salah_Pro_FILES = Tweak.X
+PES_Salah_Pro_CFLAGS = -fobjc-arc
 
-include $(THEOS_MAKE_PATH)/tweak.mk
+include $(THEOS)/makefiles/tweak.mk
