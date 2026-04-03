@@ -4,6 +4,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -11,12 +13,13 @@ jobs:
       - name: Setup Theos
         run: |
           bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C /opt/theos/sdks
           echo "THEOS=/opt/theos" >> $GITHUB_ENV
+          echo "/opt/theos/bin" >> $GITHUB_PATH
 
-      - name: Build
+      - name: Build Package
         run: |
-          cd $GITHUB_WORKSPACE
-          make package FINALPACKAGE=1 THEOS_DEVICE_IP=localhost
+          make package FINALPACKAGE=1
           
       - name: Upload
         uses: actions/upload-artifact@v4
